@@ -1,0 +1,4 @@
+<ExtentType name="edge_list_graph" namespace="ssd.hpl.hp.com" version="1.0">
+  <field type="int32" name="a" pack_relative="a" />
+  <field type="int32" name="b" />
+</ExtentType>

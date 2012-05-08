@@ -1,0 +1,51 @@
+#
+# (c) Copyright 2012, Hewlett-Packard Development Company, LP
+#
+#  See the file named COPYING for license details
+#
+# Notes on measured performance on two machines
+
+NUMBER_OF_PROCESSORS=2 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   340.12s user 1.52s system 201% cpu 2:49.73 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=4 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   542.01s user 2.98s system 373% cpu 2:25.77 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=1 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   236.70s user 0.72s system 101% cpu 3:54.23 total
+
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=2 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   355.24s user 1.73s system 201% cpu 2:57.20 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=4 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   558.19s user 2.82s system 373% cpu 2:30.01 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=1 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   238.41s user 0.82s system 101% cpu 3:55.37 total
+[100%] Built target edges
+
+NUMBER_OF_PROCESSORS=2 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   360.19s user 1.79s system 201% cpu 2:59.70 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=4 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   565.50s user 2.76s system 374% cpu 2:31.90 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=1 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   236.74s user 0.92s system 101% cpu 3:54.15 total
+[100%] Built target edges
+
+NUMBER_OF_PROCESSORS=2 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   367.21s user 1.91s system 201% cpu 3:03.22 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=4 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   569.40s user 3.03s system 373% cpu 2:33.19 total
+[100%] Built target edges
+NUMBER_OF_PROCESSORS=1 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds >|   237.38s user 0.90s system 101% cpu 3:54.65 total
+
+----
+
+hugetlbfs
+batch-size 1024: NUMBER_OF_PROCESSORS=4 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds  524.01s user 2.74s system 378% cpu 2:19.26 total
+
+batch-size 4,-O3: NUMBER_OF_PROCESSORS=4 ./edges ~/projects/Misc/edges/edges-sorted-gz.ds  492.54s user 2.48s system 380% cpu 2:10.21 total
+
+------------------------------------
+build-debian-1 (24x2.67GhZ X7542)
+
+NUMBER_OF_PROCESSORS=1 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds  221.27s user 0.71s system 101% cpu 3:38.13 total
+NUMBER_OF_PROCESSORS=2 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds >   214.31s user 0.85s system 201% cpu 1:46.74 total
+NUMBER_OF_PROCESSORS=4 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds >   201.54s user 0.73s system 396% cpu 50.994 total
+NUMBER_OF_PROCESSORS=6 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds >   205.92s user 0.99s system 586% cpu 35.293 total
+NUMBER_OF_PROCESSORS=8 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds >   211.72s user 1.11s system 769% cpu 27.662 total
+NUMBER_OF_PROCESSORS=12 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds >   217.31s user 1.20s system 1103% cpu 19.799 total
+NUMBER_OF_PROCESSORS=24 ./edges $PROJECTS/TriangleFind/edges-sorted-gz.ds >   264.76s user 1.46s system 1889% cpu 14.087 total

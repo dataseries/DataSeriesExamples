@@ -1,0 +1,15 @@
+This package is a collection of simple examples for using DataSeries. It is
+useful as a starting point for doing development, as well as learning how to
+write programs.  Finally it shows two different ways of setting up the build
+environment.
+
+simple: Some simple test examples previously in DataSeries/src/example, or from
+  the Stony-Brook Wiki.  Examples of how to read and write a file, merge files,
+  and run multiple modules in series.
+
+triangle-find: An implementation of triangle counting using DataSeries.  The problem
+  was originally from https://github.com/vertica/Graph-Analytics----Triangle-Counting
+  There are several implementations, the default is the fastest one in parallel.
+
+
+
