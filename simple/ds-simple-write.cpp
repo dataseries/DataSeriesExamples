@@ -64,8 +64,8 @@ int main(int argc, char *argv[]) {
 
 	ExtentTypeLibrary extentTypeLibrary;
 
-	const ExtentType &extentType =
-		 extentTypeLibrary.registerTypeR(extentXMLDescription);
+	const ExtentType::Ptr extentType =
+		 extentTypeLibrary.registerTypePtr(extentXMLDescription);
 
 	/*
 	 * Sink is a wrapper for a DataSeries output file.
@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
 	 */
 	uint32_t target_extent_size = 4096;
 	ExtentSeries extentSeries;
-	OutputModule outputModule(outfileSink, extentSeries,
-					extentType, target_extent_size);
+	OutputModule outputModule(outfileSink, extentSeries, 
+                                  extentType, target_extent_size);
 
 	/*
 	 * These are handles for the fields in the

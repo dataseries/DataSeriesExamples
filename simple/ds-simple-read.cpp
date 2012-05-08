@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
 	/* Now we create our module based on the source */
 	PrintRowsModule processor(source);
 
-	/* getAndDelete() method initiates iteration over all rows */
-	processor.getAndDelete();
+	/* getAndDeleteShared() method gets each extent until no more are present, so causes
+           each module to iterate over all rows */
+	processor.getAndDeleteShared();
 }

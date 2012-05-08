@@ -61,8 +61,8 @@ public:
 
 	// Now we can make the type and initialize the series.
 	string type = join("",spec);
-	output_type = &ExtentTypeLibrary::sharedExtentType(type);
-	series.setType(*output_type);
+	output_type = ExtentTypeLibrary::sharedExtentTypePtr(type);
+	series.setType(output_type);
     }
 
     virtual Extent::Ptr getSharedExtent() {
@@ -109,7 +109,7 @@ private:
     DoubleField time;
     DoubleField rownum;
     vector<DoubleField *> columns;
-    const ExtentType *output_type;
+    ExtentType::Ptr output_type;
 };
 
 /// This class does the merge of multiple input extents mapping the
@@ -128,7 +128,7 @@ class Merger : public DataSeriesModule {
 public:
     // No known upstream modules at creation time.
     Merger(const string &_type_name, const string &time_name)
-	: type_name(_type_name), output_type(NULL), 
+	: type_name(_type_name), output_type(), 
 	  // Two fixed fields, one with a variable name.
 	  orig_src(output_series, "orig_src"), time(output_series, time_name)
     { }
@@ -172,7 +172,7 @@ public:
 	sources.push_back(src);
     }
 
-    virtual Extent *getExtent() {
+    virtual Extent::Ptr getSharedExtent() {
 	if (output_type == NULL) {
 	    vector<string> spec;
 	    // As with the RandomSource, we don't know our spec so we have to construct it.
@@ -190,13 +190,13 @@ public:
 		}
 	    }
 	    spec.push_back("</ExtentType>\n");
-	    output_type = &ExtentTypeLibrary::sharedExtentType(join("",spec));
+	    output_type = ExtentTypeLibrary::sharedExtentTypePtr(join("",spec));
 	    // For debugging, dump out the final spec.
 	    cout << join("", spec);
 	}
 	
 	// Make output extent and prepare to use it.
-	Extent *out_extent = new Extent(*output_type);
+        Extent::Ptr out_extent(new Extent(output_type));
        	output_series.setExtent(out_extent);
 
 	// In practice a way to small number (10), but it forces
@@ -213,7 +213,7 @@ public:
 			continue; // definitely nothing in this source
 		    }
 		    // Might have more
-		    Extent *e = (**i).src.getExtent();
+                    Extent::Ptr e = (**i).src.getSharedExtent();
 		    if (e == NULL) {
 			(**i).done = true; // nope, don't bother to ask again.
 			continue;
@@ -228,8 +228,7 @@ public:
 	    }
 	    if (least == sources.end()) { // didn't find any source
 		if (rownum == 0) { // didn't make this row.
-		    delete out_extent;
-		    return NULL; // We're done.
+		    return Extent::Ptr(); // We're done.
 		} else {
 		    return out_extent; // We got a partial extent.
 		}
@@ -267,7 +266,7 @@ public:
 private:
     ExtentSeries output_series;
     const string type_name;
-    const ExtentType *output_type;
+    ExtentType::Ptr output_type;
     vector<Source *> sources;
     Int32Field orig_src;
     DoubleField time;
@@ -391,9 +390,7 @@ private:
     uint32_t opens_without_closes, closes_without_opens, rowcount;
 };
 
-int 
-main()
-{
+int main() {
     MTRandom.init(1972); // Fixed so everyone gets the same output.
 
     // We are going to fake this up as if we have a source or open
@@ -435,7 +432,7 @@ main()
     seq.addModule(new DStoTextModule(seq.tail()));
     seq.addModule(new OpenCloseAnalysis(seq.tail()));
 
-    seq.getAndDelete();
+    seq.getAndDeleteShared();
     
     RowAnalysisModule::printAllResults(seq);
 

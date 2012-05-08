@@ -80,6 +80,6 @@ int main(int argc, char *argv[]) {
 
     ElapsedTimeStats processor(source);
     
-    processor.getAndDelete();
+    processor.getAndDeleteShared();
     processor.printResult();
 }

@@ -80,6 +80,6 @@ int main(int argc, char *argv[]) {
         all_modules.addModule(new Module2(all_modules.tail()));
     }
     
-    all_modules.getAndDelete();
+    all_modules.getAndDeleteShared();
     RowAnalysisModule::printAllResults(all_modules);
 }
