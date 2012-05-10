@@ -5,7 +5,7 @@
 //
 // Header file for different triangle-find implementations.
 
-#include <valgrind/callgrind.h>
+/* #include <valgrind/callgrind.h> */
 
 #include <boost/thread/tss.hpp>
 
@@ -270,8 +270,8 @@ int32_t findTrianglesSetIntersection(const vector< vector<int32_t> > &edge_list,
     int32_t total = 0;
     int32_t last_total = 0;
 
-    CALLGRIND_ZERO_STATS;
-    CALLGRIND_START_INSTRUMENTATION;
+    /* CALLGRIND_ZERO_STATS;
+       CALLGRIND_START_INSTRUMENTATION; */
     uint64_t ncheck = 0, outer = 0;
     for (int32_t a = start; a < end; ++a) {
         const vector<int32_t> &b_nodes(edge_list[a]);
@@ -306,7 +306,7 @@ int32_t findTrianglesSetIntersection(const vector< vector<int32_t> > &edge_list,
             last_total = total;
         }
     }
-    CALLGRIND_STOP_INSTRUMENTATION;
+    /* CALLGRIND_STOP_INSTRUMENTATION; */
     if (start == 0 && end == edge_list.size()) {
         cout << format("checks: %d; outer %d\n") % ncheck % outer;
         cout << format("total of %d triangles\n") % total;

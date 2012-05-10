@@ -7,6 +7,7 @@
  * Copyright (c) 2011 Stony Brook University
  * Copyright (c) 2011 Harvey Mudd College
  * Copyright (c) 2011 The Research Foundation of SUNY
+ * Copyright (c) 2012 Hewlett Packard Development Company, LP
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -20,6 +21,8 @@
  */
 
 #include <iostream>
+
+#include <Lintel/StringUtil.hpp>
 
 #include <DataSeries/ExtentType.hpp>
 #include <DataSeries/DataSeriesFile.hpp>
@@ -53,11 +56,11 @@ int main(int argc, char *argv[]) {
 		"<ExtentType namespace=\"http://www.fsl.cs.sunysb.edu/\""
 		  " name=\"Trace::Fictitious::Linux\""
 		  " version=\"0.1\""
-		  " comment=\"extent comment does NOT go to the ds file\">\n"
+		  " comment=\"an example tracing type\">\n"
 		"  <field type=\"int64\" name=\"timestamp\""
-		  " comment=\"field comment does NOT go to the ds file\"/>\n"
+		  " comment=\"a helpful comment explaining the meaning of the field.\"/>\n"
 		"  <field type=\"variable32\" name=\"filename\"/>\n"
-		"  <field type=\"byte\" name=\"opcode\"/>\n"
+		"  <field type=\"byte\" name=\"opcode\" comment=\"0=read 1=write 2=other\" />\n"
 		"  <field type=\"int64\" name=\"offset\"/>\n"
 		"  <field type=\"int64\" name=\"iosize\"/>\n"
 		"</ExtentType>\n";
@@ -79,7 +82,9 @@ int main(int argc, char *argv[]) {
 	 * processes extents using ExtentSeries (iterator)
 	 * and put them into the sink.
 	 */
-	uint32_t target_extent_size = 4096;
+	uint32_t target_extent_size = 4096; 
+        // Note you would normally want larger extents, e.g. 96k
+        // Since only one row will be generated, it doesn't matter here.
 	ExtentSeries extentSeries;
 	OutputModule outputModule(outfileSink, extentSeries, 
                                   extentType, target_extent_size);
@@ -102,7 +107,7 @@ int main(int argc, char *argv[]) {
 	/*
 	 * Set new records of the extentSeries
 	 */
-	timestamp.set((ExtentType::int64)atoi(argv[1]));
+	timestamp.set(stringToInteger<int64_t>(argv[1]));
 	filename.set(argv[2]);
 	if (!strcmp(argv[3], "r"))
 		opcode.set((ExtentType::byte)0x0);
@@ -110,8 +115,8 @@ int main(int argc, char *argv[]) {
 		opcode.set((ExtentType::byte)0x1);
 	else
 		opcode.set((ExtentType::byte)0x2);
-	offset.set((ExtentType::int64)atoi(argv[4]));
-	size.set((ExtentType::int64)atoi(argv[5]));
+	offset.set(stringToInteger<int64_t>(argv[4]));
+	size.set(stringToInteger<int64_t>(argv[5]));
 
 	/*
 	 * Ask output module to finilize the file

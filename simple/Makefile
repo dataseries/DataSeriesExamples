@@ -8,7 +8,7 @@
 # PREFIX=$BUILD_OPT if installed from source
 PREFIX=/usr
 
-CFLAGS := -I$(PREFIX)/include `pkg-config --cflags libxml-2.0`
+CFLAGS := -I$(PREFIX)/include `pkg-config --cflags libxml-2.0` -g
 LDFLAGS := -L$(PREFIX)/lib -lDataSeries
 
 PROGRAMS := ds-simple-write ds-simple-read merge-example processing \
@@ -19,9 +19,10 @@ all: $(PROGRAMS)
 %: %.cpp
 	g++ $(CFLAGS) -o $@ $< $(LDFLAGS)
 
-writing_a_file: writing_a_file.cpp
-	g++ $(CFLAGS) -o $@ $< $(LDFLAGS) -lboost_regex
+test:
+	./test-ds-simple-read-write.sh $(PREFIX)
+	./test-writing_a_file.sh $(PREFIX)
 
 clean:
-	rm -f $(PROGRAMS)
+	-rm -f $(PROGRAMS) *\~
 

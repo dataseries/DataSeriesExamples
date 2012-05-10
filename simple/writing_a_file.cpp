@@ -1,19 +1,18 @@
 // -*-C++-*-
 /*
    (c) Copyright 2008 Harvey Mudd College
+   (c) Copyright 2012 Hewlett Packard Development Company, LP
 
    See the file named COPYING for license details
 */
 
-#include <boost/regex.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
+#include <Lintel/StringUtil.hpp>
 
 #include <DataSeries/ExtentType.hpp>
 #include <DataSeries/DataSeriesFile.hpp>
 #include <DataSeries/DataSeriesModule.hpp>
 
+using namespace std;
 const char* original_records[] = {
     "read 1 100 100",
     "write 2 50",
@@ -25,24 +24,6 @@ const char* original_records[] = {
     "write 8 50"
 };
 
-boost::regex record_regex("(read (\\d+) (\\d+) (\\d+))|(write (\\d+) (\\d+))");
-namespace submatches {
-    enum {
-        full,
-        read,
-        read_timestamp,
-        read_requested,
-        read_actual,
-        write,
-        write_timestamp,
-        write_bytes
-    };
-}
-
-boost::int64_t get_field(const boost::cmatch& match, int id) {
-    return(boost::lexical_cast<boost::int64_t>(match[id].str()));
-}
-
 int main() {
     /*  First we need to create XML descriptions of the Extents that we mean to use.  For this
         example we will use two ExtentTypes--one for reads and one for writes.  DataSeries doesn't
@@ -50,14 +31,14 @@ int main() {
         we want each field to be non-null. */
 
     const char* read_xml =
-        "<ExtentType name=\"ExtentType1\">"
+        "<ExtentType name=\"ExtentType1\" version=\"1.0\" namespace=\"test.example.org\" >"
         "  <field name=\"timestamp\" type=\"int64\" />"
         "  <field name=\"requested_bytes\" type=\"int64\" />"
         "  <field name=\"actual_bytes\" type=\"int64\" />"
         "</ExtentType>\n";
 
     const char* write_xml =
-        "<ExtentType name=\"ExtentType2\">"
+        "<ExtentType name=\"ExtentType2\" version=\"1.0\" namespace=\"test.example.org\" >"
         "  <field name=\"timestamp\" type=\"int64\" />"
         "  <field name=\"bytes\" type=\"int64\" />"
         "</ExtentType>\n";
@@ -96,20 +77,25 @@ int main() {
     Int64Field write_timestamp(write_series, "timestamp");
     Int64Field write_bytes(write_series, "bytes");
 
-    BOOST_FOREACH(const char* record, original_records) {
-        boost::cmatch match;
-        boost::regex_match(record, record_regex);
-        if(match[submatches::read].matched) {
+    size_t nrecords = sizeof(original_records) / sizeof(original_records[0]);
+    for (size_t i=0; i < nrecords; ++i) {
+        const char *record = original_records[i];
+
+        vector<string> parts = split(record, " ");
+        SINVARIANT(!parts.empty());
+
+        if (parts[0] == "read") {
+            SINVARIANT(parts.size() == 4);
             /*  Create a new record and set its fields. */
             read_output.newRecord();
-            read_timestamp.set(get_field(match, submatches::read_timestamp));
-            read_requested_bytes.set(get_field(match, submatches::read_requested));
-            read_actual_bytes.set(get_field(match, submatches::read_actual));
-        } else if(match[submatches::write].matched) {
+            read_timestamp.set(stringToInteger<int64_t>(parts[1]));
+            read_requested_bytes.set(stringToInteger<int64_t>(parts[2]));
+            read_actual_bytes.set(stringToInteger<int64_t>(parts[3]));
+        } else if (parts[0] == "write") {
             /*  Create a new record and set its fields. */
             write_output.newRecord();
-            write_timestamp.set(get_field(match, submatches::write_timestamp));
-            write_bytes.set(get_field(match, submatches::write_bytes));
+            write_timestamp.set(stringToInteger<int64_t>(parts[1]));
+            write_bytes.set(stringToInteger<int64_t>(parts[2]));
         }
     }
 

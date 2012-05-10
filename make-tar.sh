@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# (c) Copyright 2012, Hewlett-Packard Development Company, LP
+#
+#  See the file named COPYING for license details
+#
+# Script to build tar file when preparing a release
 set -e -x
 case `pwd` in
    */DataSeriesExamples | */DataSeriesExamples.0.20[0-9][0-9].[0-9][0-9].[0-9][0-9])
@@ -9,6 +15,7 @@ case `pwd` in
       ;;
 esac
 
+(cd simple && make clean)
 . $HOME/tmp/make-dist/version
 
 cwd=`pwd`

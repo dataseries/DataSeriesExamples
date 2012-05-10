@@ -14,7 +14,7 @@ static const char rcsid[] =
 #include <inttypes.h>
 #include <sys/time.h>
 
-#include <valgrind/callgrind.h>
+/* #include <valgrind/callgrind.h> */
 
 #define P (void)printf
 #define T(msg) do { struct timeval tv; \
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   int64_t nT = 0;
   if (NULL != argv[argc]) return 2;  /* suppress unused var warnings */
 
-  CALLGRIND_STOP_INSTRUMENTATION;
+  /* CALLGRIND_STOP_INSTRUMENTATION; */
   P("output of %s\n", rcsid);
 
   T("start first pass: parse & compute degree");
@@ -87,8 +87,8 @@ int main(int argc, char *argv[]) {
      with the set of b's lower neighbors?  every node at intersection
      creates a triangle */
   T("start counting triangles");
-  CALLGRIND_ZERO_STATS;
-  CALLGRIND_START_INSTRUMENTATION;
+  /* CALLGRIND_ZERO_STATS;
+     CALLGRIND_START_INSTRUMENTATION; */
   uint64_t outer = 0;
   uint64_t ncheck = 0;
   for (a = 0; a <= NIDmax; a++) {
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
     }
     P("# checks: %" PRId64 " ; outer %" PRId64 "\n", ncheck, outer);
   }
-  CALLGRIND_STOP_INSTRUMENTATION;
+  /* CALLGRIND_STOP_INSTRUMENTATION; */
 
   P("# checks: %" PRId64 " ; outer %" PRId64 "\n", ncheck, outer);
   P("# triangles: %" PRId64 "\n", nT);
